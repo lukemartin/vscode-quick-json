@@ -9,19 +9,16 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "easy-json" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('easy-json.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from easy-json!');
+	let disposable = vscode.commands.registerCommand('quick-json.new', function () {
+		vscode.commands.executeCommand('workbench.action.files.newUntitledFile').then(() => {
+			const editor = vscode.window.activeTextEditor;
+			const doc = editor.document;
+			vscode.languages.setTextDocumentLanguage(doc, 'json').then(() => {
+				vscode.commands.executeCommand('editor.action.clipboardPasteAction').then(() => {
+					vscode.commands.executeCommand('editor.action.formatDocument');
+				});
+			});
+		});
 	});
 
 	context.subscriptions.push(disposable);
@@ -33,5 +30,5 @@ function deactivate() {}
 
 module.exports = {
 	activate,
-	deactivate
-}
+	deactivate,
+};
